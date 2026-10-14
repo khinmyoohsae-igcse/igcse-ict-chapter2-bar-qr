@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IGCSE ICT - Barcode & QR Code Quiz (Shuffled Answers)</title>
+    <style>
+        :root {
+            --bg-main: #090d16;
+            --bg-card: #131d31;
+            --border-color: #223354;
+            --accent: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        header {
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        header h1 {
+            color: var(--accent);
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.35rem;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .quiz-status {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .score-pill {
+            background-color: #0c4a6e;
+            color: #7dd3fc;
+            padding: 0.35rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid #0284c7;
+        }
+
+        .card {
+            width: 100%;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 1.25rem;
+            padding: 2rem;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .option-btn {
+            width: 100%;
+            text-align: left;
+            background-color: #1e293b;
+            color: var(--text-main);
+            padding: 1rem 1.25rem;
+            border-radius: 0.85rem;
+            border: 1px solid #334155;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background-color: #283548;
+            border-color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .option-btn.correct {
+            background-color: #064e3b !important;
+            border-color: #059669 !important;
+            color: #ecfdf5 !important;
+        }
+
+        .option-btn.incorrect {
+            background-color: #7f1d1d !important;
+            border-color: #dc2626 !important;
+            color: #fee2e2 !important;
+        }
+
+        .feedback-box {
+            padding: 1.15rem;
+            border-radius: 0.85rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .feedback-box.correct-feedback {
+            background-color: #022c22;
+            border: 1px solid #047857;
+            color: #a7f3d0;
+        }
+
+        .feedback-box.incorrect-feedback {
+            background-color: #450a0a;
+            border: 1px solid #b91c1c;
+            color: #fecdd3;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: #0f172a;
+            font-weight: 700;
+            padding: 0.85rem 1.75rem;
+            border-radius: 0.85rem;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .results-card {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .results-card h2 {
+            font-size: 2.25rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .results-card p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        footer {
+            background-color: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>IGCSE ICT Practice Quiz</h1>
+        <p>Topics 2.2.5 Barcode Readers & 2.2.6 QR Code Scanners</p>
+    </header>
+
+    <main>
+        <div class="quiz-status">
+            <span id="question-counter">Question 1 of 30</span>
+            <span id="score-display" class="score-pill">Score: 0</span>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="card">
+            <div id="question-box" class="question-text">
+                Loading question...
+            </div>
+
+            <div id="options-container" class="options-list">
+                <!-- Options populated dynamically -->
+            </div>
+
+            <div id="feedback-box" class="feedback-box hidden">
+                <!-- Feedback populated dynamically -->
+            </div>
+
+            <div style="display: flex; justify-content: flex-end;">
+                <button id="next-btn" onclick="nextQuestion()" class="btn-primary hidden">Next Question</button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="card results-card hidden">
+            <h2>Quiz Completed! 🎉</h2>
+            <p id="final-score">You scored X out of 30</p>
+            <button onclick="restartQuiz()" class="btn-primary">Restart Quiz</button>
+        </div>
+    </main>
+
+    <footer>
+        IGCSE ICT Revision &bull; Barcode & QR Code Scanners
+    </footer>
+
+    <script>
+        const questions = [
+            // Barcode Reader Questions (1 to 15)
+            {
+                question: "What is a barcode primarily used for in retail and supermarkets?",
+                options: [
+                    { text: "To store product identification numbers that link to a computer database containing price and stock details", isCorrect: true, rationale: "Barcodes represent product identification numbers (like UPC or EAN) that query a central database for live pricing and stock info." },
+                    { text: "To record customer fingerprints for biometric security checkout", isCorrect: false, rationale: "Fingerprints are used for biometrics, not barcodes." },
+                    { text: "To store full-length high-definition movies on paper labels", isCorrect: false, rationale: "Barcode data capacity is tiny (typically just numeric digits)." },
+                    { text: "To project 3D laser holograms into store aisles", isCorrect: false, rationale: "This is holographic imaging." }
+                ]
+            },
+            {
+                question: "How does a traditional laser barcode scanner read a printed barcode?",
+                options: [
+                    { text: "By shining a red laser light across the bars and measuring the amount of light reflected back by dark bars and light spaces", isCorrect: true, rationale: "Dark bars absorb light while white spaces reflect light back to a sensor, creating an electrical pattern representing numbers." },
+                    { text: "By reading magnetic polarity patterns using physical iron read heads", isCorrect: false, rationale: "This describes magnetic stripe cards." },
+                    { text: "By capturing radio frequency waves emitted by microchips inside the paper", isCorrect: false, rationale: "This describes RFID tags." },
+                    { text: "By measuring electrostatic capacitance changes when touched by a finger", isCorrect: false, rationale: "This describes capacitive touch screens." }
+                ]
+            },
+            {
+                question: "What are the vertical lines and spaces on a standard 1D supermarket barcode composed of?",
+                options: [
+                    { text: "A series of dark bars and pale spaces of varying widths representing numeric digits", isCorrect: true, rationale: "1D barcodes consist of parallel dark lines and light spaces encoding numbers." },
+                    { text: "Microscopic pits and lands read by a blue laser", isCorrect: false, rationale: "This describes optical discs like Blu-ray." },
+                    { text: "Shaded pencil mark bubbles on an OMR test sheet", isCorrect: false, rationale: "This describes OMR forms." },
+                    { text: "Radio frequency copper antennae coils", isCorrect: false, rationale: "This describes RFID." }
+                ]
+            },
+            {
+                question: "What happens in the computer database immediately after a barcode reader scans an item at a supermarket checkout?",
+                options: [
+                    { text: "The barcode number is looked up in a stock database to retrieve the item description, price, and reduce inventory levels by one", isCorrect: true, rationale: "Scanning queries the database to get the price for the receipt and automatically update stock inventory." },
+                    { text: "The computer automatically formats the store's word processor documents", isCorrect: false, rationale: "Database updates handle sales, not word processing." },
+                    { text: "The computer prints out physical passport photos", isCorrect: false, rationale: "This is unrelated." },
+                    { text: "The item's physical dimensions double in size", isCorrect: false, rationale: "This is impossible." }
+                ]
+            },
+            {
+                question: "What is a major advantage of using barcode scanners at retail checkout points?",
+                options: [
+                    { text: "Significantly faster checkout times and fewer pricing errors compared to manual price typing", isCorrect: true, rationale: "Scanning barcodes automates data entry, eliminating human cashier typing mistakes and speeding up transactions." },
+                    { text: "They eliminate the need for any computer databases", isCorrect: false, rationale: "Barcodes require a central database to look up prices." },
+                    { text: "They allow customers to pay without internet or electricity", isCorrect: false, rationale: "Checkout systems require electrical power and network connections." },
+                    { text: "They can hold terabytes of encrypted user video files", isCorrect: false, rationale: "Barcodes store very few characters." }
+                ]
+            },
+            {
+                question: "What is a major disadvantage or limitation of traditional 1D barcodes?",
+                options: [
+                    { text: "They can only store a small amount of numeric data (typically up to 30 digits) and become unreadable if torn or scratched", isCorrect: true, rationale: "1D barcodes have limited data capacity and require physical integrity; damage to the lines breaks readability." },
+                    { text: "They require a built-in lithium battery that needs daily recharging", isCorrect: false, rationale: "Printed barcodes contain no electronic circuitry or batteries." },
+                    { text: "They can only be read underwater using sonar sound waves", isCorrect: false, rationale: "This is false." },
+                    { text: "They cost over ten dollars per printed label", isCorrect: false, rationale: "Barcode printing on paper is extremely inexpensive." }
+                ]
+            },
+            {
+                question: "Which of the following is another common application of barcode readers outside of retail supermarkets?",
+                options: [
+                    { text: "Tracking library books issued to students and baggage tracking at airport check-in desks", isCorrect: true, rationale: "Libraries and airlines use barcodes to track book loans and luggage routing quickly." },
+                    { text: "Measuring ambient room air temperature in greenhouses", isCorrect: false, rationale: "Greenhouses use temperature sensors." },
+                    { text: "Controlling industrial car manufacturing robotic welding arms", isCorrect: false, rationale: "Factory robots use programmed controllers." },
+                    { text: "Processing bank account PIN numbers at ATMs", isCorrect: false, rationale: "ATMs use chip-and-PIN readers and keypads." }
+                ]
+            },
+            {
+                question: "What is a CCD (Charge-Coupled Device) barcode scanner?",
+                options: [
+                    { text: "A handheld scanner that uses hundreds of tiny light sensors arranged in a row to capture the entire barcode image simultaneously", isCorrect: true, rationale: "CCD scanners use an array of sensors to capture the whole barcode reflection at once, having no moving parts." },
+                    { text: "A massive industrial mainframe computer used for national census data", isCorrect: false, rationale: "This is a mainframe." },
+                    { text: "An optical scanner that reads bubbling pencil marks on exam answer sheets", isCorrect: false, rationale: "This describes OMR." },
+                    { text: "A device that converts digital audio signals into speaker sound waves", isCorrect: false, rationale: "This is a DAC." }
+                ]
+            },
+            {
+                question: "What is an advantage of a CCD barcode scanner over a traditional laser barcode scanner?",
+                options: [
+                    { text: "CCD scanners have no moving parts, making them more robust, lightweight, and less susceptible to physical drop damage", isCorrect: true, rationale: "Because CCDs use solid-state sensor arrays rather than moving laser mirrors, they are more durable." },
+                    { text: "CCD scanners can project 3D holograms into open air", isCorrect: false, rationale: "CCDs do not project holograms." },
+                    { text: "CCD scanners have unlimited wireless battery life", isCorrect: false, rationale: "Battery life depends on the specific model." },
+                    { text: "CCD scanners can store full-length feature films", isCorrect: false, rationale: "They are scanning input devices, not storage." }
+                ]
+            },
+            {
+                question: "Why must a traditional laser barcode scanner be held at a specific distance and orientation when scanning?",
+                options: [
+                    { text: "The laser line must cut completely across all vertical bars and spaces horizontally for the sensor to decode the reflection pattern", isCorrect: true, rationale: "Laser scanners require the beam to sweep across the entire width of the barcode to capture the full code sequence." },
+                    { text: "To prevent the paper label from catching fire under high heat", isCorrect: false, rationale: "Barcode scanners use low-power, safe laser diodes." },
+                    { text: "To recharge the barcode's internal lithium battery", isCorrect: false, rationale: "Barcodes have no batteries." },
+                    { text: "To translate foreign languages into English text", isCorrect: false, rationale: "Translation is done by CAT software." }
+                ]
+            },
+            {
+                question: "What is a pen-type barcode reader?",
+                options: [
+                    { text: "A wand-like reader containing a light source and photo sensor that the user manually drags across the barcode", isCorrect: true, rationale: "Pen readers require the user to physically drag the tip across the barcode bars to measure light reflection." },
+                    { text: "A standard fountain pen filled with blue ink for signing checks", isCorrect: false, rationale: "This is stationery." },
+                    { text: "A digital stylus used on capacitive tablet screens", isCorrect: false, rationale: "Styluses are for touch screens." },
+                    { text: "An optical character recognition wand", isCorrect: false, rationale: "This is an OCR wand." }
+                ]
+            },
+            {
+                question: "What is a disadvantage of pen-type barcode readers compared to laser or CCD gun scanners?",
+                options: [
+                    { text: "They require steady manual contact and precise dragging speed across the barcode, making them slower and prone to user error", isCorrect: true, rationale: "Dragging a pen reader manually requires steady motion; if dragged too fast or unevenly, it fails to read." },
+                    { text: "They weigh over 10 kilograms, making them impossible to lift", isCorrect: false, rationale: "Pen readers are very lightweight." },
+                    { text: "They can only be used underwater", isCorrect: false, rationale: "This is false." },
+                    { text: "They require high-voltage mains electricity", isCorrect: false, rationale: "They draw low power via USB." }
+                ]
+            },
+            {
+                question: "What is a camera-based barcode reader?",
+                options: [
+                    { text: "A reader that uses a digital camera imaging system to take a picture of a barcode and decode it using image processing software", isCorrect: true, rationale: "Camera-based readers capture a 2D image snapshot of barcodes, allowing omnidirectional reading." },
+                    { text: "A security camera mounted on a bank ceiling", isCorrect: false, rationale: "This is CCTV." },
+                    { text: "A digital camera used for taking portrait photographs", isCorrect: false, rationale: "This is general photography." },
+                    { text: "An X-ray machine used in airport luggage screening", isCorrect: false, rationale: "This is an X-ray scanner." }
+                ]
+            },
+            {
+                question: "Which input device category do barcode readers belong to?",
+                options: [
+                    { text: "Direct Data Entry (DDE) devices", isCorrect: true, rationale: "Barcode readers capture data directly from printed labels without manual keyboard typing." },
+                    { text: "Manual text entry keyboards", isCorrect: false, rationale: "Barcodes bypass manual keyboard typing." },
+                    { text: "Soft-copy visual output display units", isCorrect: false, rationale: "Barcode readers are input devices." },
+                    { text: "Primary volatile RAM memory chips", isCorrect: false, rationale: "This describes RAM." }
+                ]
+            },
+            {
+                question: "Can a standard 1D barcode reader scan a damaged or crumpled barcode where lines are broken?",
+                options: [
+                    { text: "Often no, because broken lines disrupt the continuous light reflection pattern required by 1D laser or pen scanners", isCorrect: true, rationale: "1D linear barcodes require unbroken lines; if torn or smudged, traditional readers cannot decode them." },
+                    { text: "Yes, 1D barcodes automatically heal themselves when scanned", isCorrect: false, rationale: "Paper labels cannot heal." },
+                    { text: "Yes, 1D barcodes contain self-repairing quantum circuits", isCorrect: false, rationale: "This is false." },
+                    { text: "Yes, because 1D barcodes store data using radio waves", isCorrect: false, rationale: "1D barcodes use printed ink, not radio waves." }
+                ]
+            },
+
+            // QR Code Scanner Questions (16 to 30)
+            {
+                question: "What does the acronym QR stand for in 'QR code'?",
+                options: [
+                    { text: "Quick Response", isCorrect: true, rationale: "QR stands for Quick Response, indicating fast readability by mobile devices." },
+                    { text: "Quantum Reader", isCorrect: false, rationale: "This is incorrect." },
+                    { text: "Quality Recognition", isCorrect: false, rationale: "This is incorrect." },
+                    { text: "Query Route", isCorrect: false, rationale: "This is incorrect." }
+                ]
+            },
+            {
+                question: "What is the structural appearance of a Quick Response (QR) code compared to a traditional 1D barcode?",
+                options: [
+                    { text: "A two-dimensional (2D) square grid of black and white squares (modules) featuring three distinct corner squares for alignment", isCorrect: true, rationale: "QR codes are 2D matrices containing data in both vertical and horizontal directions with three large alignment squares." },
+                    { text: "A series of parallel vertical lines of varying widths with no corner boxes", isCorrect: false, rationale: "This describes 1D linear barcodes." },
+                    { text: "A circular spiral track of microscopic pits and lands", isCorrect: false, rationale: "This describes optical CDs/DVDs." },
+                    { text: "Shaded pencil mark bubbles on a paper answer form", isCorrect: false, rationale: "This describes OMR sheets." }
+                ]
+            },
+            {
+                question: "How much more data can a QR code store compared to a traditional 1D barcode?",
+                options: [
+                    { text: "Significantly more data (up to several thousand characters, including web URLs, text, and contact info)", isCorrect: true, rationale: "Because QR codes store data in two dimensions (horizontal and vertical), their capacity is vastly larger than 1D barcodes." },
+                    { text: "Exactly the same amount of data (up to 10 digits only)", isCorrect: false, rationale: "QR codes hold far more than 10 digits." },
+                    { text: "Less data than a barcode, limited to 3 digits", isCorrect: false, rationale: "QR capacity is much higher." },
+                    { text: "Zero data, because they are purely decorative images", isCorrect: false, rationale: "QR codes encode functional data." }
+                ]
+            },
+            {
+                question: "What hardware device is most commonly used by consumers today to scan and read QR codes?",
+                options: [
+                    { text: "A smartphone camera running a built-in QR scanner app", isCorrect: true, rationale: "Modern smartphones use their built-in digital cameras and image processing software to scan QR codes instantly." },
+                    { text: "An industrial flatbed document scanner", isCorrect: false, rationale: "Flatbed scanners are office equipment, not mobile QR readers." },
+                    { text: "A magnetic stripe card reader swipe terminal", isCorrect: false, rationale: "Card readers scan payment cards." },
+                    { text: "An OMR multiple-choice exam scanner", isCorrect: false, rationale: "OMR reads bubble sheets." }
+                ]
+            },
+            {
+                question: "What happens on a smartphone when a user successfully scans a QR code containing a web link (URL)?",
+                options: [
+                    { text: "The smartphone prompts the user to open the embedded website link directly in their internet browser", isCorrect: true, rationale: "Scanning a URL QR code automatically decodes the web address and offers to open it in the phone browser." },
+                    { text: "The smartphone immediately deletes all photos and contacts", isCorrect: false, rationale: "Scanning links does not delete personal files." },
+                    { text: "The smartphone prints out a paper receipt using inkjet ink", isCorrect: false, rationale: "Phones lack built-in printers." },
+                    { text: "The smartphone converts into a television remote control", isCorrect: false, rationale: "This is unrelated." }
+                ]
+            },
+            {
+                question: "What is a major advantage of QR codes over traditional 1D barcodes regarding damage and readability?",
+                options: [
+                    { text: "QR codes include built-in error correction, meaning they can still be read successfully even if partially damaged, dirty, or obscured", isCorrect: true, rationale: "QR codes feature robust error correction algorithms allowing successful scanning even with up to 30% damage." },
+                    { text: "QR codes are indestructible and cannot be torn or burned", isCorrect: false, rationale: "Paper QR codes can still be destroyed by fire or heavy tearing." },
+                    { text: "QR codes require no light to be read in pitch black darkness", isCorrect: false, rationale: "Cameras require light to capture the QR image." },
+                    { text: "QR codes never require smartphone cameras", isCorrect: false, rationale: "Cameras are required to capture 2D QR images." }
+                ]
+            },
+            {
+                question: "What is an advantage of QR codes regarding orientation during scanning?",
+                options: [
+                    { text: "They can be scanned from any angle or direction (omnidirectional) thanks to their three corner alignment squares", isCorrect: true, rationale: "The three corner square markers allow camera scanners to detect orientation instantly, letting users scan from upside down or sideways." },
+                    { text: "They must be held at an exact 90-degree angle or scanning fails completely", isCorrect: false, rationale: "QR codes support omnidirectional scanning from any angle." },
+                    { text: "They can only be scanned when viewed through a mirror", isCorrect: false, rationale: "Mirrors are unnecessary." },
+                    { text: "They require direct physical contact with the camera lens", isCorrect: false, rationale: "Scanning works from a distance." }
+                ]
+            },
+            {
+                question: "Where are QR codes commonly used in restaurants, marketing, and ticketing?",
+                options: [
+                    { text: "Digital restaurant menus on tables, event e-tickets, product packaging, and advertising billboards", isCorrect: true, rationale: "QR codes are widely used to link physical items or locations instantly to online menus, tickets, and websites." },
+                    { text: "Scoring multiple-choice university exam answer sheets", isCorrect: false, rationale: "Exam marking uses OMR." },
+                    { text: "Reading bank account numbers printed with magnetic ink on checks", isCorrect: false, rationale: "Bank checks use MICR." },
+                    { text: "Measuring greenhouse ambient air temperature", isCorrect: false, rationale: "Temperature uses sensors." }
+                ]
+            },
+            {
+                question: "What is a security risk or disadvantage associated with malicious QR codes ('quishing')?",
+                options: [
+                    { text: "Fraudsters can place fake QR codes over legitimate ones (such as parking meters or menus) to redirect users to scam websites that steal personal data or passwords", isCorrect: true, rationale: "Because users cannot read URL text inside a QR code visually before scanning, malicious codes can trick users into visiting phishing sites." },
+                    { text: "Scanning a QR code can cause the smartphone's screen glass to crack", isCorrect: false, rationale: "Software scans cannot crack physical glass." },
+                    { text: "Malicious QR codes drain smartphone batteries instantly upon viewing", isCorrect: false, rationale: "This is false." },
+                    { text: "They permanently alter the phone's mobile operating system code", isCorrect: false, rationale: "Standard QR scans open web browser links." }
+                ]
+            },
+            {
+                question: "How do QR codes differ structurally from traditional 1D barcodes?",
+                options: [
+                    { text: "1D barcodes store data in a single horizontal line of vertical bars, whereas QR codes store data in a 2D square matrix of dots", isCorrect: true, rationale: "1D is linear (one dimension); QR is a two-dimensional square matrix." },
+                    { text: "1D barcodes are square grids, while QR codes are long vertical lines", isCorrect: false, rationale: "This is completely reversed." },
+                    { text: "1D barcodes use radio frequencies, while QR codes use magnetic tape", isCorrect: false, rationale: "Both are optical/visual representations." },
+                    { text: "There is no structural difference between them", isCorrect: false, rationale: "Their physical structures differ completely." }
+                ]
+            },
+            {
+                question: "What is required on a smartphone to read a QR code successfully?",
+                options: [
+                    { text: "A digital camera and a QR scanning app (or built-in camera scanner software)", isCorrect: true, rationale: "Smartphones use their camera to capture the visual matrix and software to decode the data pattern." },
+                    { text: "A physical laser gun plugged into the phone's charging port", isCorrect: false, rationale: "External laser guns are unnecessary; built-in cameras handle QR scanning." },
+                    { text: "An internet broadband Wi-Fi router connection", isCorrect: false, rationale: "Scanning decodes local data instantly; internet is only needed if opening a web link afterward." },
+                    { text: "A magnetic swipe card reader attachment", isCorrect: false, rationale: "Card readers are for payment cards." }
+                ]
+            },
+            {
+                question: "What type of data can be encoded into a QR code?",
+                options: [
+                    { text: "Web URLs, plain text, phone numbers, email addresses, Wi-Fi network credentials, and payment details", isCorrect: true, rationale: "QR codes can store various text strings, contact cards, Wi-Fi logins, and website links." },
+                    { text: "High-definition streaming video files and feature-length movies", isCorrect: false, rationale: "File sizes for QR codes are too small for full movies." },
+                    { text: "Live microphone audio voice recordings", isCorrect: false, rationale: "Audio requires digital audio formats, not QR matrices." },
+                    { text: "Physical temperature and humidity readings", isCorrect: false, rationale: "Environmental data is captured by sensors." }
+                ]
+            },
+            {
+                question: "Why might a museum exhibit use QR codes next to historical artifacts instead of long printed explanatory plaques?",
+                options: [
+                    { text: "Visitors can scan the QR code to read multi-language guides, watch videos, or listen to audio descriptions on their personal smartphones", isCorrect: true, rationale: "QR codes link physical displays to unlimited digital multimedia resources in multiple languages." },
+                    { text: "Because museum visitors are legally forbidden from reading printed paper text", isCorrect: false, rationale: "This is false." },
+                    { text: "Because QR codes weigh less than paper plaques", isCorrect: false, rationale: "Both are printed on physical signs." },
+                    { text: "Because QR codes automatically clean the museum floors", isCorrect: false, rationale: "This is unrelated." }
+                ]
+            },
+            {
+                question: "Can a user generate their own QR code for free?",
+                options: [
+                    { text: "Yes, numerous free online QR code generators allow anyone to input text or a URL and create a downloadable QR image", isCorrect: true, rationale: "Creating QR codes is free and simple using online generator tools." },
+                    { text: "No, QR codes can only be manufactured by government nuclear laboratories", isCorrect: false, rationale: "Anyone can create them." },
+                    { text: "No, generating a QR code requires purchasing a specialized laser printing press", isCorrect: false, rationale: "Standard inkjet or laser printers can print them." },
+                    { text: "No, QR codes are copyrighted and illegal to make independently", isCorrect: false, rationale: "The QR code patent is open-source and free to use." }
+                ]
+            },
+            {
+                question: "Which of the following best summarizes the overall comparison between Barcode readers and QR code scanners in IGCSE ICT?",
+                options: [
+                    { text: "Barcode readers scan 1D linear lines for retail product IDs with low capacity, whereas QR code scanners read 2D square matrices holding vastly more data and web links", isCorrect: true, rationale: "Barcodes are 1D linear codes for basic IDs; QR codes are 2D matrices capable of storing web links and extensive text." },
+                    { text: "Barcode readers are wireless radio devices, while QR codes are magnetic stripe cards", isCorrect: false, rationale: "This is incorrect." },
+                    { text: "Both technologies are identical in structure and data capacity", isCorrect: false, rationale: "Their capacities and structures differ significantly." },
+                    { text: "Barcode readers are used for exams, while QR codes are used for greenhouse temperature control", isCorrect: false, rationale: "This is incorrect." }
+                ]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answered = false;
+
+        const questionCounter = document.getElementById("question-counter");
+        const scoreDisplay = document.getElementById("score-display");
+        const questionBox = document.getElementById("question-box");
+        const optionsContainer = document.getElementById("options-container");
+        const feedbackBox = document.getElementById("feedback-box");
+        const nextBtn = document.getElementById("next-btn");
+        const quizContainer = document.getElementById("quiz-container");
+        const resultsContainer = document.getElementById("results-container");
+        const finalScore = document.getElementById("final-score");
+
+        function loadQuestion() {
+            answered = false;
+            feedbackBox.classList.add("hidden");
+            nextBtn.classList.add("hidden");
+            
+            const q = questions[currentQuestionIndex];
+            questionCounter.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+            scoreDisplay.textContent = `Score: ${score}`;
+            questionBox.textContent = q.question;
+
+            // Shuffle options array randomly so correct answer is not always first
+            let shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+
+            optionsContainer.innerHTML = "";
+            shuffledOptions.forEach((opt) => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.textContent = opt.text;
+                btn.onclick = () => selectOption(opt, shuffledOptions);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(selectedOpt, shuffledOptions) {
+            if (answered) return;
+            answered = true;
+
+            const allOptionButtons = optionsContainer.children;
+
+            shuffledOptions.forEach((opt, idx) => {
+                allOptionButtons[idx].disabled = true;
+                if (opt.isCorrect) {
+                    allOptionButtons[idx].classList.add("correct");
+                } else if (opt === selectedOpt && !selectedOpt.isCorrect) {
+                    allOptionButtons[idx].classList.add("incorrect");
+                }
+            });
+
+            feedbackBox.classList.remove("hidden");
+            if (selectedOpt.isCorrect) {
+                score++;
+                scoreDisplay.textContent = `Score: ${score}`;
+                feedbackBox.className = "feedback-box correct-feedback";
+                feedbackBox.innerHTML = `<strong>Correct!</strong> ${selectedOpt.rationale}`;
+            } else {
+                feedbackBox.className = "feedback-box incorrect-feedback";
+                feedbackBox.innerHTML = `<strong>Incorrect.</strong> ${selectedOpt.rationale}`;
+            }
+
+            if (currentQuestionIndex < questions.length - 1) {
+                nextBtn.textContent = "Next Question";
+            } else {
+                nextBtn.textContent = "View Results";
+            }
+            nextBtn.classList.remove("hidden");
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                quizContainer.classList.add("hidden");
+                resultsContainer.classList.remove("hidden");
+                finalScore.textContent = `You scored ${score} out of ${questions.length}`;
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            resultsContainer.classList.add("hidden");
+            quizContainer.classList.remove("hidden");
+            loadQuestion();
+        }
+
+        // Initialize quiz on load
+        loadQuestion();
+    </script>
+</body>
+</html>
